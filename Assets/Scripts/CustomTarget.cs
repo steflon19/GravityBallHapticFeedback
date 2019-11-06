@@ -8,9 +8,6 @@ public class CustomTarget : MonoBehaviour
 {
     private Vector3 localCenter;
 
-    public CustomBlackboard blackboard;
-    public Observer observer;
-
     // Start is called before the first frame update
     void Start()
     {

@@ -5,65 +5,76 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.SceneManagement;
+using Valve.VR;
+
+public struct BallThrowData {
+    BallVariants type;
+    // todo add angle
+    Vector3 appliedForce;
+    float DistanceToTarget;
+
+}
 
 // used to handle saving any input not from controllers, saving files, etc..
 public class Observer : MonoBehaviour
 {
-    private List<List<int>> dataStorage;
-    public static int throwNumber = 0;
-    public static BallVariants activeBallVariant = BallVariants.Baseball;
+    private List<BallThrowData> dataStorage;
+    public int throwNumber = 0;
     public GameObject SteamVRObject;
-    public Text playerIdDisplay;
+    public BallVariants activeBallVariant;
+
+    [System.NonSerialized]
+    public CustomBlackboard blackboard;
     // Start is called before the first frame update
     void Start()
     {
         SteamVRObject.SetActive(true);
-        InitializeDataStorage();
+        activeBallVariant = BallVariants.Kettleball;
+        this.blackboard = FindObjectOfType<CustomBlackboard>();
+        blackboard.PlayerInfo.text += MainMenu.participantID.ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            // TODO: write to file?
+            // TODO: write to file
 
 
-
-            MainMenuPassID.participantID = -1;
+            MainMenu.participantID = -1;
             XRSettings.enabled = false;
             SteamVRObject.SetActive(false);
-            Observer.throwNumber = 0;
+            throwNumber = 0;
             SceneManager.LoadScene("menu");
         }
-
-        if (Input.GetKeyDown(KeyCode.B)) {
-
+        if(throwNumber >= 5)
+        {
+            throwNumber = 0;
+            if ((int)activeBallVariant < 2) activeBallVariant++; else activeBallVariant = 0;
+            Debug.Log("active variant " + activeBallVariant);
         }
     }
 
-    void InitializeDataStorage() {
-
-    }
-
+    // TODO: Find necessary parameters 
     void SaveThrowDataToStorage(CustomTarget target, CustomThrowable ball) {
-        int currentThrow = Observer.throwNumber;
+
 
     }
 
     void writeDataToFile() {
-        string path = "Assets/Resources/ParticipantsData/" + MainMenuPassID.participantID.ToString() + ".csv";
+        string path = "Assets/Resources/ParticipantsData/" + MainMenu.participantID.ToString() + ".csv";
 
         StreamWriter writer = new StreamWriter(path, true);
-        writer.WriteLine("ParticipantID," + MainMenuPassID.participantID.ToString());
+        writer.WriteLine("ParticipantID," + MainMenu.participantID.ToString());
 
-        writer.WriteLine("some data," + (MainMenuPassID.participantID / 2).ToString());
-        writer.WriteLine("some more data," + (MainMenuPassID.participantID * 2).ToString());
+        writer.WriteLine("some data," + (MainMenu.participantID / 2).ToString());
+        writer.WriteLine("some more data," + (MainMenu.participantID * 2).ToString());
         writer.Close();
     }
 }
 
 public enum BallVariants {
     Baseball,
-    Kettleball,
-    Golfball
+    Golfball,
+    Kettleball
 }

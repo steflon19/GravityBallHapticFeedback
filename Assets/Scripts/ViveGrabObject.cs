@@ -14,6 +14,7 @@ public class ViveGrabObject : MonoBehaviour
     private Vector3 lastPos;
     private List<Vector3> lastPosList;
     private int posToSave = 5;
+    private Observer observer;
 
 
     // Start is called before the first frame update

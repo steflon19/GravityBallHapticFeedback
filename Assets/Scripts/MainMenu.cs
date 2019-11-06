@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
     public Button btnMR;
     public InputField inputNumber;
     private int participantNumber;
+    public static int participantID = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +30,7 @@ public class MainMenu : MonoBehaviour
         if (int.TryParse(inputNumber.text, out participantNumber))
         {
             XRSettings.enabled = true;
-            MainMenuPassID.participantID = participantNumber;
+            MainMenu.participantID = participantNumber;
             SceneManager.LoadScene("vr_scene");
         }
     }
@@ -38,12 +39,8 @@ public class MainMenu : MonoBehaviour
         if (int.TryParse(inputNumber.text, out participantNumber))
         {
             XRSettings.enabled = true;
-            MainMenuPassID.participantID = participantNumber;
+            MainMenu.participantID = participantNumber;
             SceneManager.LoadScene("mr_scene");
         }
     }
-}
-
-public class MainMenuPassID {
-    public static int participantID = 123;
 }

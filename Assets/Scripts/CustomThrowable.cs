@@ -9,6 +9,12 @@ public class CustomThrowable : MonoBehaviour
     private Vector3 landingPos;
     private Rigidbody rb;
 
+    public BallVariants type;
+    [System.NonSerialized]
+    public CustomBlackboard blackboard;
+    [System.NonSerialized]
+    public Observer observer;
+
     [System.NonSerialized]
     public bool isThrown;
     [System.NonSerialized]
@@ -19,6 +25,8 @@ public class CustomThrowable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.blackboard = FindObjectOfType<CustomBlackboard>();
+        this.observer = FindObjectOfType<Observer>();
         this.isThrown = this.collisionHandled = this.isGrabbed = false;
         this.throwableName = this.gameObject.name;
         this.startPos = this.transform.position;
@@ -30,6 +38,7 @@ public class CustomThrowable : MonoBehaviour
     {
         if (isThrown) {
             //print("object thrown from " + this.transform.position);
+            // TODO: see what/why here
             this.isThrown = false;
         }
     }
@@ -43,6 +52,8 @@ public class CustomThrowable : MonoBehaviour
         if (col.gameObject.name == "field")
         {
             landingPos = rb != null ? rb.position : col.transform.position;
+            // TODO: make sure this is necessary or not
+            //observer.throwNumber++;
             // to avoid bouncing on target to be counted as hit.
             this.collisionHandled = true;
             //print("collided with field?");
@@ -51,7 +62,10 @@ public class CustomThrowable : MonoBehaviour
         if (col.gameObject.name.Contains("target"))
         {
             landingPos = rb != null ? rb.position : col.transform.position;
-            //print("collided with target?");
+            observer.throwNumber++;
+            this.collisionHandled = true;
+
+            print("collided with target?");
         }
     }
 }
