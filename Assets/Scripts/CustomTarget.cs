@@ -8,16 +8,13 @@ public class CustomTarget : MonoBehaviour
 {
     private Vector3 localCenter;
 
-    private GameObject pointsCollumn;
-
-    public Text pointsText;
+    public CustomBlackboard blackboard;
+    public Observer observer;
 
     // Start is called before the first frame update
     void Start()
     {
-        // circle so x and y scale are the same and z is not important.
         this.localCenter = this.transform.localPosition;
-        pointsText.text = "-";
     }
 
     void OnCollisionEnter(Collision col)
@@ -35,7 +32,6 @@ public class CustomTarget : MonoBehaviour
             // convert 0..1 to 1..4
             float points = Mathf.Ceil((1 - distance) / 0.25f);// Mathf.Clamp(Mathf.Round(4*((float)Math.Round(distance, 1))), 1, 4);
             print("throwable \"" + col.gameObject.name + "\" hit target, distance to center: " + distance + " and points: " + points);
-            pointsText.text = points.ToString();
         }
     }
 }

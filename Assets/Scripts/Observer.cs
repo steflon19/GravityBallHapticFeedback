@@ -11,6 +11,7 @@ public class Observer : MonoBehaviour
 {
     private List<List<int>> dataStorage;
     public static int throwNumber = 0;
+    public static BallVariants activeBallVariant = BallVariants.Baseball;
     public GameObject SteamVRObject;
     public Text playerIdDisplay;
     // Start is called before the first frame update
@@ -31,6 +32,7 @@ public class Observer : MonoBehaviour
             MainMenuPassID.participantID = -1;
             XRSettings.enabled = false;
             SteamVRObject.SetActive(false);
+            Observer.throwNumber = 0;
             SceneManager.LoadScene("menu");
         }
 
@@ -40,6 +42,11 @@ public class Observer : MonoBehaviour
     }
 
     void InitializeDataStorage() {
+
+    }
+
+    void SaveThrowDataToStorage(CustomTarget target, CustomThrowable ball) {
+        int currentThrow = Observer.throwNumber;
 
     }
 
