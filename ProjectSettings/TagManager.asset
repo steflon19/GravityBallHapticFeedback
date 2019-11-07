@@ -12,6 +12,8 @@ TagManager:
   - Throw4
   - Throw5
   - ThrowTotal
+  - field
+  - ground
   layers:
   - Default
   - TransparentFX
