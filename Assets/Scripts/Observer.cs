@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
@@ -12,6 +13,7 @@ public struct BallThrowData {
     // todo add angle
     Vector3 appliedForce;
     float DistanceToTarget;
+    Vector3 playerPos;
 
 }
 
@@ -19,17 +21,17 @@ public struct BallThrowData {
 public class Observer : MonoBehaviour
 {
     private List<BallThrowData> dataStorage;
-    public int throwNumber = 0;
     public GameObject SteamVRObject;
     public BallVariants activeBallVariant;
 
-    [System.NonSerialized]
+    private int throwNumber = 0;
+    [NonSerialized]
     public CustomBlackboard blackboard;
+
     // Start is called before the first frame update
     void Start()
     {
         SteamVRObject.SetActive(true);
-        activeBallVariant = BallVariants.Kettleball;
         this.blackboard = FindObjectOfType<CustomBlackboard>();
         blackboard.PlayerInfo.text += MainMenu.participantID.ToString();
     }
@@ -38,7 +40,7 @@ public class Observer : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            // TODO: write to file
+            // TODO: write to file?
 
 
             MainMenu.participantID = -1;
@@ -47,7 +49,7 @@ public class Observer : MonoBehaviour
             throwNumber = 0;
             SceneManager.LoadScene("menu");
         }
-        if(throwNumber >= 5)
+        if(throwNumber > 4)
         {
             throwNumber = 0;
             if ((int)activeBallVariant < 2) activeBallVariant++; else activeBallVariant = 0;
@@ -55,12 +57,17 @@ public class Observer : MonoBehaviour
         }
     }
 
+    public void HandleThrowable(CustomTarget target, CustomThrowable ball, Vector3 playerPos) {
+        throwNumber++;
+
+    }
     // TODO: Find necessary parameters 
     void SaveThrowDataToStorage(CustomTarget target, CustomThrowable ball) {
 
 
     }
 
+    // TODO: actually write data in here....
     void writeDataToFile() {
         string path = "Assets/Resources/ParticipantsData/" + MainMenu.participantID.ToString() + ".csv";
 

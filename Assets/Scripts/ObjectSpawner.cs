@@ -15,18 +15,19 @@ public class ObjectSpawner : MonoBehaviour
     private Vector3 BallStartPosition;
 
     private Observer observer;
+    private ViveActionHandler viveActionHandler;
     // Start is called before the first frame update
     void Start()
     {
-        // TODO: Set values properly, currently for debugging.
-        BallStartPosition = new Vector3(203.5f, 11f, 130.5f);// new Vector3(206.4f, 11f, 130f);
+        BallStartPosition = new Vector3(1.8f, 0.9f, 1.95f);
         observer = FindObjectOfType<Observer>();
+        viveActionHandler = FindObjectOfType<ViveActionHandler>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T) || viveActionHandler.GetGripDown())
         {
             if(activeTarget) Destroy(activeTarget);
             float x = targetBase.transform.localPosition.x;
@@ -41,16 +42,14 @@ public class ObjectSpawner : MonoBehaviour
             activeTarget.SetActive(true);
         }
 
-
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.B) || viveActionHandler.GetGripDown())
         {
             if (activeBall) Destroy(activeBall.gameObject);
             CustomThrowable ballToSpawn = Balls.Find(b => b.type == observer.activeBallVariant);
             activeBall = Instantiate(ballToSpawn);
-            activeBall.transform.position = BallStartPosition;
-            Debug.Log("stuff " + activeBall);
-            // TODO: REMOVE THIS LINE
-            observer.throwNumber++;
+            //activeBall.transform.position = BallStartPosition;
+            activeBall.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
+            // observer.throwNumber++;
         }
 
 

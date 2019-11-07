@@ -45,8 +45,11 @@ public class CustomThrowable : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        // only handle first collision.
+        // only handle first collision. to prevent bouncing etc
         if (this.collisionHandled)
+            return;
+        // if the ball is just dropped, not thrown, we dont need to do anything further.
+        if (col.gameObject.CompareTag("ground"))
             return;
 
         if (col.gameObject.name == "field")
@@ -57,15 +60,24 @@ public class CustomThrowable : MonoBehaviour
             // to avoid bouncing on target to be counted as hit.
             this.collisionHandled = true;
             //print("collided with field?");
+            return;
         }
-
-        if (col.gameObject.name.Contains("target"))
+        CustomTarget target = col.gameObject.GetComponent<CustomTarget>();
+        if (target)
         {
             landingPos = rb != null ? rb.position : col.transform.position;
-            observer.throwNumber++;
+            //observer.throwNumber++;
             this.collisionHandled = true;
 
-            print("collided with target?");
+            // avoid showing bounce collision as valid throw
+            collisionHandled = true;
+
+            Vector3 contactPoint = col.transform.InverseTransformPoint(col.GetContact(0).point);
+            float distance = Mathf.Clamp(Vector3.Distance(target.localCenter, contactPoint) * 2, 0, 1);
+
+            // convert 0..1 to 1..4
+            float points = Mathf.Ceil((1 - distance) / 0.25f);// Mathf.Clamp(Mathf.Round(4*((float)Math.Round(distance, 1))), 1, 4);
+            print("throwable \"" + gameObject.name + "\" hit target, distance to center: " + distance + " and points: " + points);
         }
     }
 }

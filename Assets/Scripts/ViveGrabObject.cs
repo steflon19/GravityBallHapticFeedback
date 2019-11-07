@@ -11,9 +11,8 @@ public class ViveGrabObject : MonoBehaviour
 
     private GameObject collidingObject;
     private GameObject objectInHand;
-    private Vector3 lastPos;
     private List<Vector3> lastPosList;
-    private int posToSave = 5;
+    private int posToSave = 10;
     private Observer observer;
 
 
@@ -57,17 +56,14 @@ public class ViveGrabObject : MonoBehaviour
         collidingObject = null;
 
         var joint = AddFixedJoint();
-        //print("object grabbed " + objectInHand.name);
         joint.connectedBody = objectInHand.GetComponent<Rigidbody>();
 
         if (objectInHand.GetComponent<CustomThrowable>())
         {
-            //print("grabbed throwable");
             objectInHand.GetComponent<CustomThrowable>().isGrabbed = true;
         }
     }
 
-    // 3
     private FixedJoint AddFixedJoint()
     {
         FixedJoint fx = gameObject.AddComponent<FixedJoint>();
@@ -81,58 +77,51 @@ public class ViveGrabObject : MonoBehaviour
         if (GetComponent<FixedJoint>())
         {
             GetComponent<FixedJoint>().connectedBody = null;
-            Destroy(GetComponent<FixedJoint>());
+            //Destroy(GetComponent<FixedJoint>());
+            foreach (FixedJoint joint in GetComponents<FixedJoint>()) Destroy(joint);
+
             Rigidbody rb = objectInHand.GetComponent<Rigidbody>();
 
             float lf = Time.fixedDeltaTime;
-            Vector3 dir = rb.position - lastPosList[0];
-            float dist = Vector3.Distance(rb.position, lastPos);
-            float v = 0;
-            Vector3 avgDist = GetDistAvg();
-            v = (dist);
-            Debug.Log("average " + dist + v);
-            Vector3 velo = controllerPose.GetVelocity();
 
-            // v = rb.mass * (((dist / lf)/lf);
-            //Vector3 force = dist * (rb.mass * v.magnitude);
-            Vector3 force = (rb.mass) * (v) * dir;
-            // force = rb.mass * velo;
-            Debug.Log("force " + force);
-            //rb.AddForce(force, ForceMode.Impulse);
+            Vector3 dist = rb.position - lastPosList[lastPosList.Count - 1];
+            Vector3 avgVelo = GetAvgVelocity();
 
-            rb.velocity = (avgDist / lf) * (1/rb.mass);
+            Debug.Log("velo lastPos " + dist / lf + " velo last10Avg " + avgVelo);
+
+            Vector3 force = (rb.mass) * (avgVelo/lf);
+            //rb.velocity = force;
+            rb.AddForce(force, ForceMode.Force);
 
             rb.angularVelocity = controllerPose.GetAngularVelocity();
             // add some check for a proper throw?
 
             if (objectInHand.GetComponent<CustomThrowable>())
             {
-                //print("threw throwable");
                 objectInHand.GetComponent<CustomThrowable>().isThrown = true;
                 objectInHand.GetComponent<CustomThrowable>().isGrabbed = false;
             }
-
+            
         }
         objectInHand = null;
     }
 
-    Vector3 GetDistAvg() {
+    // maybe try getting distance velocity and then multiply normalised direction with it?
+    Vector3 GetAvgVelocity() {
         Vector3 dist = Vector3.zero;
-        int index = 0;
-        foreach (Vector3 pos in lastPosList) {
-            if (index == 0) {
-                index++;
+        
+        for (int i = 0; i < lastPosList.Count;i++) {
+            if (i == 0) {
                 continue;
             }
 
-            dist += (pos - lastPosList[index - 1]);
+            dist += (lastPosList[i] - lastPosList[i - 1]);
 
-            index++;
         }
-        dist.x /= (lastPosList.Count - 1);
-        dist.y /= (lastPosList.Count - 1);
-        dist.z /= (lastPosList.Count - 1);
-        return dist; // (lastPosList.Count - 1);
+        // the average distance from one frame to the next
+        Vector3 vel = dist / (Time.fixedDeltaTime * (lastPosList.Count - 1));
+        // dividing the distance by frametime should give the velocity
+        return vel;// (lastPosList.Count - 1);
     }
 
     // Update is called once per frame
@@ -155,11 +144,10 @@ public class ViveGrabObject : MonoBehaviour
         }
 
         if (objectInHand) {
-            lastPos = objectInHand.GetComponent<Rigidbody>().position;
             if (lastPosList.Count >= posToSave) {
                 lastPosList.RemoveAt(0);
             }
-            lastPosList.Add(lastPos);
+            lastPosList.Add(objectInHand.GetComponent<Rigidbody>().position);
         }
     }
 }

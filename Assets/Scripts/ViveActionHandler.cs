@@ -11,9 +11,10 @@ public class ViveActionHandler : MonoBehaviour
     {
         
     }
-    public SteamVR_Input_Sources handType; // 1
-    public SteamVR_Action_Boolean teleportAction; // 2
-    public SteamVR_Action_Boolean grabAction; // 3
+    public SteamVR_Input_Sources handType;
+    public SteamVR_Action_Boolean teleportAction;
+    public SteamVR_Action_Boolean grabAction; 
+    public SteamVR_Action_Boolean gripAction;
     // Update is called once per frame
     void Update()
     {
@@ -27,15 +28,22 @@ public class ViveActionHandler : MonoBehaviour
             //print("Grab " + handType);
         }
     }
-    public bool GetTeleportDown() // 1
+    public bool GetTeleportDown()
     {
+        if (handType == SteamVR_Input_Sources.LeftHand) return false;
         return teleportAction.GetStateDown(handType);
     }
 
-    public bool GetGrab() // 2
+    public bool GetGrab()
     {
         return grabAction.GetState(handType);
     }
 
+    public bool GetGripDown()
+    {
+        // To prevent the user from accidentaly spawning stuff.
+        if (handType == SteamVR_Input_Sources.LeftHand) return false;
+        return gripAction.GetStateDown(handType);
+    }
 
 }
