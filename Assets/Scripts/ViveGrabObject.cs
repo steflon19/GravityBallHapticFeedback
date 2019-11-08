@@ -84,14 +84,40 @@ public class ViveGrabObject : MonoBehaviour
 
             float lf = Time.fixedDeltaTime;
 
-            Vector3 dist = rb.position - lastPosList[lastPosList.Count - 1];
-            Vector3 avgVelo = GetAvgVelocity();
+            Vector3 dir = rb.position - lastPosList[0];
+            float dist = Vector3.Distance(rb.position, lastPosList[0]);
+            //Vector3 avgVelo = GetAvgVelocity();
 
-            Debug.Log("velo lastPos " + dist / lf + " velo last10Avg " + avgVelo);
 
-            Vector3 force = (rb.mass) * (avgVelo/lf);
+            //Vector3 force = ((rb.mass) * (avgVelo/lf))/10;
             //rb.velocity = force;
-            rb.AddForce(force, ForceMode.Force);
+            //rb.AddForce(force, ForceMode.Impulse);
+            float timeSquared = Mathf.Pow(lf * (lastPosList.Count - 1), 2);
+
+            Debug.Log("velo lastPos " + dir / timeSquared);
+            // --
+            //float signX, signY, signZ = 1;
+            //signX = Mathf.Sign(dir.x);
+            //signY = Mathf.Sign(dir.y);
+            //signZ = Mathf.Sign(dir.z);
+            // dir.Normalize();
+            //dir.x *= signX;
+            //dir.y *= signY;
+            //dir.z *= signZ;
+            // --
+
+            Vector3 force = (dir/(timeSquared)) * (rb.mass); // * (dist / timeSquared);
+            force /= 10f;
+            Debug.Log("force " + force + " rb.mass " + rb.mass);
+            //Vector3 normalizedDir = new Vector3(dir.normalized.x - 1, dir.normalized.y - 1, dir.normalized.z - 1);
+            //normalizedDir *= 2f;
+            //force += Physics.gravity;
+
+            // TODO; Make sure this is the proper angle????
+            float yAngle = Mathf.Asin(force.normalized.y) * Mathf.Rad2Deg;
+            observer.AddCurrentThrowData(rb.position, yAngle, force);
+
+            rb.AddForce(force, ForceMode.Impulse);
 
             rb.angularVelocity = controllerPose.GetAngularVelocity();
             // add some check for a proper throw?
@@ -109,15 +135,16 @@ public class ViveGrabObject : MonoBehaviour
     // maybe try getting distance velocity and then multiply normalised direction with it?
     Vector3 GetAvgVelocity() {
         Vector3 dist = Vector3.zero;
-        
-        for (int i = 0; i < lastPosList.Count;i++) {
+
+        /*for (int i = 0; i < lastPosList.Count;i++) {
             if (i == 0) {
                 continue;
             }
 
             dist += (lastPosList[i] - lastPosList[i - 1]);
 
-        }
+        }*/
+        dist = lastPosList[lastPosList.Count - 1] - lastPosList[0];
         // the average distance from one frame to the next
         Vector3 vel = dist / (Time.fixedDeltaTime * (lastPosList.Count - 1));
         // dividing the distance by frametime should give the velocity

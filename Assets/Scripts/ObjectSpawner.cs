@@ -7,7 +7,8 @@ public class ObjectSpawner : MonoBehaviour
     public Vector2 extends;
     // init pos 13, 10.2, 239
     public GameObject targetBase;
-    private GameObject activeTarget;
+    [System.NonSerialized]
+    public GameObject activeTarget;
 
     public List<CustomThrowable> Balls;
     private CustomThrowable activeBall;
@@ -27,7 +28,7 @@ public class ObjectSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) || viveActionHandler.GetGripDown())
+        if (Input.GetKeyDown(KeyCode.T) || viveActionHandler.GetTeleportDown())
         {
             if(activeTarget) Destroy(activeTarget);
             float x = targetBase.transform.localPosition.x;
@@ -45,7 +46,7 @@ public class ObjectSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B) || viveActionHandler.GetGripDown())
         {
             if (activeBall) Destroy(activeBall.gameObject);
-            CustomThrowable ballToSpawn = Balls.Find(b => b.type == observer.activeBallVariant);
+            CustomThrowable ballToSpawn = Balls.Find(b => b.type == observer.currentBallVariant);
             activeBall = Instantiate(ballToSpawn);
             //activeBall.transform.position = BallStartPosition;
             activeBall.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging

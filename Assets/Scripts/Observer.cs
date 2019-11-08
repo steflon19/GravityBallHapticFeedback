@@ -8,23 +8,28 @@ using UnityEngine.XR;
 using UnityEngine.SceneManagement;
 using Valve.VR;
 
-public struct BallThrowData {
-    BallVariants type;
+public class BallThrowData {
+    public BallVariants type;
+    public int throwNumber;
     // todo add angle
-    Vector3 appliedForce;
-    float DistanceToTarget;
-    Vector3 playerPos;
+    public int Points;
+    public float DistanceToTarget;
+    public Vector3 ReleasePos;
+    public Vector3 ReleaseForce;
+    public float ReleaseAngle;
 
 }
 
 // used to handle saving any input not from controllers, saving files, etc..
 public class Observer : MonoBehaviour
 {
-    private List<BallThrowData> dataStorage;
+    private List<BallThrowData> ballDataStorage;
+    public BallThrowData currentThrowData;
     public GameObject SteamVRObject;
-    public BallVariants activeBallVariant;
+    public BallVariants currentBallVariant;
+    private ObjectSpawner spawner;
 
-    private int throwNumber = 0;
+    private int currentThrowNumber = 0;
     [NonSerialized]
     public CustomBlackboard blackboard;
 
@@ -33,6 +38,7 @@ public class Observer : MonoBehaviour
     {
         SteamVRObject.SetActive(true);
         this.blackboard = FindObjectOfType<CustomBlackboard>();
+        this.spawner = FindObjectOfType<ObjectSpawner>();
         blackboard.PlayerInfo.text += MainMenu.participantID.ToString();
     }
 
@@ -42,40 +48,69 @@ public class Observer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) {
             // TODO: write to file?
 
-
             MainMenu.participantID = -1;
             XRSettings.enabled = false;
             SteamVRObject.SetActive(false);
-            throwNumber = 0;
+            currentThrowNumber = 0;
             SceneManager.LoadScene("menu");
         }
-        if(throwNumber > 4)
+        if(currentThrowNumber > 4)
         {
-            throwNumber = 0;
-            if ((int)activeBallVariant < 2) activeBallVariant++; else activeBallVariant = 0;
-            Debug.Log("active variant " + activeBallVariant);
+            currentThrowNumber = 0;
+
+            int sumOne, sumTwo, sumThree = 0;
+            int.TryParse(blackboard.Ballpoints[0][5].text, out sumOne);
+            int.TryParse(blackboard.Ballpoints[1][5].text, out sumTwo);
+            int.TryParse(blackboard.Ballpoints[2][5].text, out sumThree);
+            blackboard.TotalPoints.text = "Total Points: " + (sumOne + sumTwo + sumThree).ToString();
+            if ((int)currentBallVariant < 2) currentBallVariant++; else currentBallVariant = 0;
+            Debug.Log("active variant " + currentBallVariant);
         }
     }
-
-    public void HandleThrowable(CustomTarget target, CustomThrowable ball, Vector3 playerPos) {
-        throwNumber++;
-
+    
+    // handle throwable when target is missed
+    public void HandleThrowableHit(CustomThrowable ball)
+    {
+        GameObject activeTarget = spawner.activeTarget;
+        // TODO: calculate distance to save to data storage.
+        blackboard.Ballpoints[(int)currentBallVariant][currentThrowNumber].text = "0";
+        SaveThrowDataToStorage(ball, 0);
     }
-    // TODO: Find necessary parameters 
-    void SaveThrowDataToStorage(CustomTarget target, CustomThrowable ball) {
+    // handle throwable when target is hit
+    public void HandleThrowableHit(CustomThrowable ball, int points)
+    {
+        GameObject activeTarget = spawner.activeTarget;
+        blackboard.Ballpoints[(int)currentBallVariant][currentThrowNumber].text = points.ToString();
+        int currentTotalVariant = currentThrowNumber == 0 ? 0 : int.Parse(blackboard.Ballpoints[(int)currentBallVariant][5].text);
+        blackboard.Ballpoints[(int)currentBallVariant][5].text = (currentTotalVariant + points).ToString();
+        SaveThrowDataToStorage(ball, points);
+    }
 
+    void SaveThrowDataToStorage(CustomThrowable ball, int points) {
+        int dataIndex = ballDataStorage.FindIndex(bd => bd.type == currentBallVariant && bd.throwNumber == currentThrowNumber);
+        ballDataStorage[dataIndex].Points = points;
+        ballDataStorage[dataIndex].DistanceToTarget = Vector3.Distance(ball.transform.position,spawner.activeTarget.transform.position);
+    }
 
+    public void AddCurrentThrowData(Vector3 releasePos, float yAngle, Vector3 appliedForce) {
+        currentThrowData = new BallThrowData();
+        currentThrowData.ReleasePos = releasePos;
+        currentThrowData.ReleaseAngle = yAngle;
+        currentThrowData.ReleaseForce = appliedForce;
+        currentThrowData.throwNumber = currentThrowNumber;
+        currentThrowData.type = currentBallVariant;
+        // There could be severa throws due to failed attempts, therefore invalid data should be removed
+        ballDataStorage.Remove(ballDataStorage.Find(bd => bd.type == currentBallVariant && bd.throwNumber == currentThrowNumber));
+        ballDataStorage.Add(currentThrowData);
     }
 
     // TODO: actually write data in here....
     void writeDataToFile() {
-        string path = "Assets/Resources/ParticipantsData/" + MainMenu.participantID.ToString() + ".csv";
+        string path = "Assets/Resources/ParticipantsData/" + MainMenu.participantID.ToString() + ".json";
 
         StreamWriter writer = new StreamWriter(path, true);
         writer.WriteLine("ParticipantID," + MainMenu.participantID.ToString());
-
-        writer.WriteLine("some data," + (MainMenu.participantID / 2).ToString());
-        writer.WriteLine("some more data," + (MainMenu.participantID * 2).ToString());
+        writer.Write(JsonUtility.ToJson(ballDataStorage));
         writer.Close();
     }
 }

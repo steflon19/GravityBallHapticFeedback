@@ -52,18 +52,17 @@ public class CustomThrowable : MonoBehaviour
         if (col.gameObject.CompareTag("ground"))
             return;
 
-        if (col.gameObject.name == "field")
+        if (col.gameObject.name == "field" && !this.collisionHandled)
         {
             landingPos = rb != null ? rb.position : col.transform.position;
-            // TODO: make sure this is necessary or not
-            //observer.throwNumber++;
             // to avoid bouncing on target to be counted as hit.
             this.collisionHandled = true;
             //print("collided with field?");
+            observer.HandleThrowableHit(this);
             return;
         }
         CustomTarget target = col.gameObject.GetComponent<CustomTarget>();
-        if (target)
+        if (target && !this.collisionHandled)
         {
             landingPos = rb != null ? rb.position : col.transform.position;
             //observer.throwNumber++;
@@ -77,6 +76,7 @@ public class CustomThrowable : MonoBehaviour
 
             // convert 0..1 to 1..4
             float points = Mathf.Ceil((1 - distance) / 0.25f);// Mathf.Clamp(Mathf.Round(4*((float)Math.Round(distance, 1))), 1, 4);
+            observer.HandleThrowableHit(this, (int)points);
             print("throwable \"" + gameObject.name + "\" hit target, distance to center: " + distance + " and points: " + points);
         }
     }

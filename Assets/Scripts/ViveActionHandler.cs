@@ -30,7 +30,7 @@ public class ViveActionHandler : MonoBehaviour
     }
     public bool GetTeleportDown()
     {
-        if (handType == SteamVR_Input_Sources.LeftHand) return false;
+        //if (handType == SteamVR_Input_Sources.RightHand) return false;
         return teleportAction.GetStateDown(handType);
     }
 
@@ -42,7 +42,7 @@ public class ViveActionHandler : MonoBehaviour
     public bool GetGripDown()
     {
         // To prevent the user from accidentaly spawning stuff.
-        if (handType == SteamVR_Input_Sources.LeftHand) return false;
+        //if (handType == SteamVR_Input_Sources.RightHand) return false;
         return gripAction.GetStateDown(handType);
     }
 
