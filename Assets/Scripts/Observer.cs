@@ -114,6 +114,7 @@ public class Observer : MonoBehaviour
 
         StreamWriter writer = new StreamWriter(path, true);
         writer.WriteLine("ParticipantID," + MainMenu.participantID.ToString());
+        // TODO: FIXXME this doesnt write anything...
         writer.Write(JsonUtility.ToJson(ballDataStorage));
         writer.Close();
     }

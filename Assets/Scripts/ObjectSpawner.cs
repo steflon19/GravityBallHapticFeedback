@@ -49,8 +49,8 @@ public class ObjectSpawner : MonoBehaviour
             if (activeBall) Destroy(activeBall.gameObject);
             CustomThrowable ballToSpawn = Balls.Find(b => b.type == observer.currentBallVariant);
             activeBall = Instantiate(ballToSpawn);
-            activeBall.transform.position = BallStartPosition;
-            //activeBall.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
+            //activeBall.transform.position = BallStartPosition;
+            activeBall.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
             // observer.throwNumber++;
         }
 
