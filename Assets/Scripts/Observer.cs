@@ -40,6 +40,7 @@ public class Observer : MonoBehaviour
         this.blackboard = FindObjectOfType<CustomBlackboard>();
         this.spawner = FindObjectOfType<ObjectSpawner>();
         blackboard.PlayerInfo.text += MainMenu.participantID.ToString();
+        ballDataStorage = new List<BallThrowData>();
     }
 
     // Update is called once per frame
@@ -47,7 +48,7 @@ public class Observer : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             // TODO: write to file?
-
+            writeDataToFile();
             MainMenu.participantID = -1;
             XRSettings.enabled = false;
             SteamVRObject.SetActive(false);
@@ -74,12 +75,14 @@ public class Observer : MonoBehaviour
         GameObject activeTarget = spawner.activeTarget;
         // TODO: calculate distance to save to data storage.
         blackboard.Ballpoints[(int)currentBallVariant][currentThrowNumber].text = "0";
+        int currentTotalVariant = 0;
+        if (!int.TryParse(blackboard.Ballpoints[(int)currentBallVariant][5].text, out currentTotalVariant))
+            blackboard.Ballpoints[(int)currentBallVariant][5].text = "0";
         SaveThrowDataToStorage(ball, 0);
     }
     // handle throwable when target is hit
     public void HandleThrowableHit(CustomThrowable ball, int points)
     {
-        GameObject activeTarget = spawner.activeTarget;
         blackboard.Ballpoints[(int)currentBallVariant][currentThrowNumber].text = points.ToString();
         int currentTotalVariant = currentThrowNumber == 0 ? 0 : int.Parse(blackboard.Ballpoints[(int)currentBallVariant][5].text);
         blackboard.Ballpoints[(int)currentBallVariant][5].text = (currentTotalVariant + points).ToString();
@@ -89,7 +92,8 @@ public class Observer : MonoBehaviour
     void SaveThrowDataToStorage(CustomThrowable ball, int points) {
         int dataIndex = ballDataStorage.FindIndex(bd => bd.type == currentBallVariant && bd.throwNumber == currentThrowNumber);
         ballDataStorage[dataIndex].Points = points;
-        ballDataStorage[dataIndex].DistanceToTarget = Vector3.Distance(ball.transform.position,spawner.activeTarget.transform.position);
+        ballDataStorage[dataIndex].DistanceToTarget = Vector3.Distance(ball.transform.position, spawner.activeTarget.transform.position);
+        currentThrowNumber++;
     }
 
     public void AddCurrentThrowData(Vector3 releasePos, float yAngle, Vector3 appliedForce) {

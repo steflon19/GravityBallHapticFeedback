@@ -20,6 +20,7 @@ public class ViveGrabObject : MonoBehaviour
     void Start()
     {
         lastPosList = new List<Vector3>();
+        observer = GameObject.FindObjectOfType<Observer>();
     }
 
     private void SetCollidingObject(Collider col)
