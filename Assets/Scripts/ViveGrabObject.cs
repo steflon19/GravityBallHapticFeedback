@@ -77,9 +77,13 @@ public class ViveGrabObject : MonoBehaviour
     {
         if (GetComponent<FixedJoint>())
         {
-            GetComponent<FixedJoint>().connectedBody = null;
+            //GetComponent<FixedJoint>().connectedBody = null;
             //Destroy(GetComponent<FixedJoint>());
-            foreach (FixedJoint joint in GetComponents<FixedJoint>()) Destroy(joint);
+            foreach (FixedJoint joint in GetComponents<FixedJoint>())
+            {
+                joint.connectedBody = null;
+                Destroy(joint);
+            }
 
             Rigidbody rb = objectInHand.GetComponent<Rigidbody>();
 
@@ -116,9 +120,13 @@ public class ViveGrabObject : MonoBehaviour
 
             float yAngle = Mathf.Asin(force.normalized.y) * Mathf.Rad2Deg;
             Debug.Log("yAngle " + yAngle);
+            //Debug.Log("mass " + rb.mass);
+            
             observer.AddCurrentThrowData(rb.position, yAngle, force);
-
+            //Debug.Log("force " + force);
+            //Debug.Log("name " + rb.name);
             rb.AddForce(force, ForceMode.Impulse);
+            //rb.velocity = force;
 
             rb.angularVelocity = controllerPose.GetAngularVelocity();
             // add some check for a proper throw?
