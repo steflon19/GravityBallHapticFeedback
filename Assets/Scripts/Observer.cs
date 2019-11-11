@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ using UnityEngine.XR;
 using UnityEngine.SceneManagement;
 using Valve.VR;
 
+[Serializable]
 public class BallThrowData {
     public BallVariants type;
     public int throwNumber;
@@ -19,13 +21,18 @@ public class BallThrowData {
     public float ReleaseAngle;
 
 }
+public enum BallVariants
+{
+    Baseball,
+    Golfball,
+    Kettleball
+}
 
 // used to handle saving any input not from controllers, saving files, etc..
 public class Observer : MonoBehaviour
 {
     private List<BallThrowData> ballDataStorage;
     public BallThrowData currentThrowData;
-    public GameObject SteamVRObject;
     public BallVariants currentBallVariant;
     private ObjectSpawner spawner;
 
@@ -36,7 +43,6 @@ public class Observer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SteamVRObject.SetActive(true);
         this.blackboard = FindObjectOfType<CustomBlackboard>();
         this.spawner = FindObjectOfType<ObjectSpawner>();
         blackboard.PlayerInfo.text += MainMenu.participantID.ToString();
@@ -47,11 +53,8 @@ public class Observer : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            // TODO: write to file?
             writeDataToFile();
             MainMenu.participantID = -1;
-            XRSettings.enabled = false;
-            SteamVRObject.SetActive(false);
             currentThrowNumber = 0;
             SceneManager.LoadScene("menu");
         }
@@ -68,7 +71,7 @@ public class Observer : MonoBehaviour
             Debug.Log("active variant " + currentBallVariant);
         }
     }
-    
+
     // handle throwable when target is missed
     public void HandleThrowableHit(CustomThrowable ball)
     {
@@ -108,20 +111,22 @@ public class Observer : MonoBehaviour
         ballDataStorage.Add(currentThrowData);
     }
 
-    // TODO: actually write data in here....
     void writeDataToFile() {
         string path = "Assets/Resources/ParticipantsData/" + MainMenu.participantID.ToString() + ".json";
 
         StreamWriter writer = new StreamWriter(path, true);
-        writer.WriteLine("ParticipantID," + MainMenu.participantID.ToString());
-        // TODO: FIXXME this doesnt write anything...
-        writer.Write(JsonUtility.ToJson(ballDataStorage));
+        writer.WriteLine("{\"ParticipantID\": " + MainMenu.participantID.ToString() + ",");
+        writer.WriteLine("\"Scene\": \"" + SceneManager.GetActiveScene().name + "\",");
+        writer.WriteLine("\"ThrowDataEntries\": [");
+        int index = 0;
+        string commaString = ",";
+        foreach (BallThrowData dataEntry in ballDataStorage)
+        {
+            if (index == ballDataStorage.Count - 1) commaString = "";
+            writer.WriteLine(JsonUtility.ToJson(dataEntry) + commaString);
+        }
+        writer.WriteLine("]\n}");
         writer.Close();
     }
-}
-
-public enum BallVariants {
-    Baseball,
-    Golfball,
-    Kettleball
+    
 }

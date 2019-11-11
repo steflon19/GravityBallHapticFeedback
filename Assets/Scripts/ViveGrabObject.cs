@@ -109,13 +109,13 @@ public class ViveGrabObject : MonoBehaviour
 
             Vector3 force = (dir/(timeSquared)) * (rb.mass); // * (dist / timeSquared);
             force /= 10f;
-            Debug.Log("force " + force + " rb.mass " + rb.mass);
+            //Debug.Log("force " + force + " rb.mass " + rb.mass);
             //Vector3 normalizedDir = new Vector3(dir.normalized.x - 1, dir.normalized.y - 1, dir.normalized.z - 1);
             //normalizedDir *= 2f;
             //force += Physics.gravity;
 
-            // TODO; Make sure this is the proper angle????
             float yAngle = Mathf.Asin(force.normalized.y) * Mathf.Rad2Deg;
+            Debug.Log("yAngle " + yAngle);
             observer.AddCurrentThrowData(rb.position, yAngle, force);
 
             rb.AddForce(force, ForceMode.Impulse);
