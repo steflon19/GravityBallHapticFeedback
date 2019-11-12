@@ -10,6 +10,7 @@ public class CustomThrowable : MonoBehaviour
     private Rigidbody rb;
 
     public BallVariants type;
+    public GameObject snapAnchor;
     [System.NonSerialized]
     public CustomBlackboard blackboard;
     [System.NonSerialized]

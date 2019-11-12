@@ -28,6 +28,12 @@ public enum BallVariants
     Kettleball
 }
 
+public enum SceneType
+{
+    VR_Scene,
+    MR_Scene
+}
+
 // used to handle saving any input not from controllers, saving files, etc..
 public class Observer : MonoBehaviour
 {
@@ -35,6 +41,7 @@ public class Observer : MonoBehaviour
     public BallThrowData currentThrowData;
     public BallVariants currentBallVariant;
     private ObjectSpawner spawner;
+    public SceneType SceneType;
 
     private int currentThrowNumber = 0;
     [NonSerialized]

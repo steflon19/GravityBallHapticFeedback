@@ -8,6 +8,7 @@ public class ViveGrabObject : MonoBehaviour
     public SteamVR_Input_Sources handType;
     public SteamVR_Behaviour_Pose controllerPose;
     public SteamVR_Action_Boolean grabAction;
+    public GameObject snapAnchor;
 
     private GameObject collidingObject;
     private GameObject objectInHand;
@@ -53,14 +54,21 @@ public class ViveGrabObject : MonoBehaviour
 
     private void GrabObject()
     {
-        objectInHand = collidingObject;
-        collidingObject = null;
-
-        var joint = AddFixedJoint();
-        joint.connectedBody = objectInHand.GetComponent<Rigidbody>();
-
-        if (objectInHand.GetComponent<CustomThrowable>())
+        CustomThrowable throwable = collidingObject.GetComponent<CustomThrowable>();
+        if (throwable)
         {
+            objectInHand = collidingObject;
+            collidingObject = null;
+
+            var joint = AddFixedJoint();
+            Debug.Log(objectInHand.name + " - " + objectInHand.transform.localPosition);
+            if (throwable.snapAnchor)
+                throwable.snapAnchor.transform.position = snapAnchor.transform.position;
+            else
+               objectInHand.transform.position = snapAnchor.transform.position;
+            objectInHand.transform.rotation = Quaternion.Euler(0, 0, 0);
+            Debug.Log(objectInHand.transform.localPosition);
+            joint.connectedBody = objectInHand.GetComponent<Rigidbody>();
             objectInHand.GetComponent<CustomThrowable>().isGrabbed = true;
         }
     }
