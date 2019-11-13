@@ -55,6 +55,7 @@ public class ViveGrabObject : MonoBehaviour
     private void GrabObject()
     {
         CustomThrowable throwable = collidingObject.GetComponent<CustomThrowable>();
+        if (!throwable) throwable = collidingObject.GetComponentInParent<CustomThrowable>();
         if (throwable)
         {
             objectInHand = collidingObject;
@@ -63,10 +64,17 @@ public class ViveGrabObject : MonoBehaviour
             var joint = AddFixedJoint();
             Debug.Log(objectInHand.name + " - " + objectInHand.transform.localPosition);
             if (throwable.snapAnchor)
+            {
                 throwable.snapAnchor.transform.position = snapAnchor.transform.position;
+                throwable.snapAnchor.transform.up = snapAnchor.transform.up;
+                // objectInHand.transform.position = snapAnchor.transform.position;
+                // objectInHand.transform.localPosition = new Vector3(0, objectInHand.transform.localPosition.y, 0); //-= throwable.snapAnchor.transform.localPosition;
+            }
             else
-               objectInHand.transform.position = snapAnchor.transform.position;
-            objectInHand.transform.rotation = Quaternion.Euler(0, 0, 0);
+            {
+                objectInHand.transform.position = snapAnchor.transform.position;
+                objectInHand.transform.up = snapAnchor.transform.up; // Quaternion.Euler(0, 0, 0);
+            }
             Debug.Log(objectInHand.transform.localPosition);
             joint.connectedBody = objectInHand.GetComponent<Rigidbody>();
             objectInHand.GetComponent<CustomThrowable>().isGrabbed = true;

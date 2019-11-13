@@ -5,13 +5,12 @@ using UnityEngine;
 public class ObjectSpawner : MonoBehaviour
 {
     public Vector2 extends;
-    // init pos 13, 10.2, 239
-    public GameObject targetBase;
+    public GameObject baseTarget;
     [System.NonSerialized]
     public GameObject activeTarget;
 
-    public List<CustomThrowable> Balls;
-    private CustomThrowable activeBall;
+    public List<CustomThrowable> Throwables;
+    private CustomThrowable activeThrowable;
 
     private Vector3 BallStartPosition;
 
@@ -23,7 +22,7 @@ public class ObjectSpawner : MonoBehaviour
         BallStartPosition = new Vector3(1.8f, 0.9f, 1.95f);
         observer = FindObjectOfType<Observer>();
         viveActionHandler = FindObjectOfType<ViveActionHandler>();
-        activeTarget = Instantiate(targetBase);
+        activeTarget = Instantiate(baseTarget);
     }
 
     // Update is called once per frame
@@ -32,12 +31,12 @@ public class ObjectSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T) || viveActionHandler.GetTeleportDown())
         {
             if(activeTarget) Destroy(activeTarget);
-            float x = targetBase.transform.localPosition.x;
-            float z = targetBase.transform.localPosition.z;
-            float y = targetBase.transform.localPosition.y;
+            float x = baseTarget.transform.localPosition.x;
+            float z = baseTarget.transform.localPosition.z;
+            float y = baseTarget.transform.localPosition.y;
             float scale = Random.Range(0.5f, 1.3f);
             Vector3 newPos = new Vector3(Random.Range(x, x + extends.x), y, Random.Range(z, z + extends.y));
-            activeTarget = Instantiate(targetBase);
+            activeTarget = Instantiate(baseTarget);
             activeTarget.transform.parent = this.transform;
             activeTarget.transform.localPosition = newPos;
             activeTarget.transform.localScale = new Vector3(scale, scale, 1);
@@ -46,12 +45,12 @@ public class ObjectSpawner : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B) || viveActionHandler.GetGripDown())
         {
-            if (activeBall) Destroy(activeBall.gameObject);
-            CustomThrowable ballToSpawn = Balls.Find(b => b.type == observer.currentBallVariant);
-            activeBall = Instantiate(ballToSpawn);
+            if (activeThrowable) Destroy(activeThrowable.gameObject);
+            CustomThrowable ballToSpawn = Throwables.Find(b => b.type == observer.currentThrowable);
+            activeThrowable = Instantiate(ballToSpawn);
             // TODO: set to ballstartposition for proper start
             //activeBall.transform.position = BallStartPosition;
-            activeBall.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
+            activeThrowable.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
             // observer.throwNumber++;
         }
 
