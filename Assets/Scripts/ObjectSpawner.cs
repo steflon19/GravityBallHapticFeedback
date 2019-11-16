@@ -53,7 +53,5 @@ public class ObjectSpawner : MonoBehaviour
             //activeThrowable.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
             // observer.throwNumber++;
         }
-
-
     }
 }
