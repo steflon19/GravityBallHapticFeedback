@@ -49,8 +49,8 @@ public class ObjectSpawner : MonoBehaviour
             CustomThrowable ballToSpawn = Throwables.Find(b => b.type == observer.currentThrowable);
             activeThrowable = Instantiate(ballToSpawn);
             // TODO: set to ballstartposition for proper start
-            //activeBall.transform.position = BallStartPosition;
-            activeThrowable.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
+            activeThrowable.transform.position = BallStartPosition;
+            //activeThrowable.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
             // observer.throwNumber++;
         }
 

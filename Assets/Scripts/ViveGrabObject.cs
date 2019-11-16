@@ -65,8 +65,10 @@ public class ViveGrabObject : MonoBehaviour
             Debug.Log(objectInHand.name + " - " + objectInHand.transform.localPosition);
             if (throwable.snapAnchor)
             {
-                throwable.snapAnchor.transform.position = snapAnchor.transform.position;
-                throwable.snapAnchor.transform.up = snapAnchor.transform.up;
+                throwable.transform.up = snapAnchor.transform.up;
+                throwable.transform.position = snapAnchor.transform.position;
+                Vector3 posDif = snapAnchor.transform.position - throwable.snapAnchor.transform.position;
+                throwable.transform.position += posDif;
                 // objectInHand.transform.position = snapAnchor.transform.position;
                 // objectInHand.transform.localPosition = new Vector3(0, objectInHand.transform.localPosition.y, 0); //-= throwable.snapAnchor.transform.localPosition;
             }
