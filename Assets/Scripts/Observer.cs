@@ -64,7 +64,6 @@ public class Observer : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            blackboard.gameObject.SetActive(false);
             writeDataToFile();
             MainMenu.participantID = -1;
             currentThrowNumber = 0;
@@ -126,7 +125,6 @@ public class Observer : MonoBehaviour
         //string pathBase = "Assets/Resources/ParticipantsData/";
         string pathBase = "ParticipantsData/";
         string path = pathBase + MainMenu.participantID.ToString() + ".json";
-
 
         if (!Directory.Exists(pathBase))
         {
