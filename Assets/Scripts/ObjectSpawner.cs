@@ -50,6 +50,8 @@ public class ObjectSpawner : MonoBehaviour
             activeThrowable = Instantiate(ballToSpawn);
             // TODO: set to ballstartposition for proper start
             activeThrowable.transform.position = BallStartPosition;
+            activeThrowable.gameObject.SetActive(true);
+            Debug.Log("active throwable ", activeThrowable);
             //activeThrowable.transform.position = new Vector3(-0.28f, 0.95f, -0.12f); // for debugging
             // observer.throwNumber++;
         }
