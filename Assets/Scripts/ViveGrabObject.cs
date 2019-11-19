@@ -54,8 +54,24 @@ public class ViveGrabObject : MonoBehaviour
 
     private void GrabObject()
     {
-        CustomThrowable throwable = collidingObject.GetComponent<CustomThrowable>();
-        if (!throwable) throwable = collidingObject.GetComponentInParent<CustomThrowable>();
+        CustomThrowable throwable = null;
+        if (observer.ActiveSceneType == SceneType.VR_Scene)
+        {
+            throwable = collidingObject.GetComponent<CustomThrowable>();
+            if (!throwable) throwable = collidingObject.GetComponentInParent<CustomThrowable>();
+        }
+        else if (observer.ActiveSceneType == SceneType.MR_Scene && observer.spawner.throwableGrabReady)
+        {
+            throwable = observer.spawner.activeThrowable;
+            throwable.gameObject.SetActive(true);
+            collidingObject = throwable.gameObject;
+            observer.spawner.throwableGrabReady = false;
+            Debug.Log("grabbing set active? ? " + throwable);
+        }
+        else {
+            Debug.Log("some shit happening");
+
+        }
         if (throwable)
         {
             objectInHand = collidingObject;
@@ -78,7 +94,7 @@ public class ViveGrabObject : MonoBehaviour
                 objectInHand.transform.position = snapAnchor.transform.position;
                 objectInHand.transform.up = snapAnchor.transform.up; // Quaternion.Euler(0, 0, 0);
             }
-            Debug.Log(objectInHand.transform.localPosition);
+            //Debug.Log(objectInHand.transform.localPosition);
             joint.connectedBody = objectInHand.GetComponent<Rigidbody>();
             objectInHand.GetComponent<CustomThrowable>().isGrabbed = true;
         }
@@ -186,6 +202,9 @@ public class ViveGrabObject : MonoBehaviour
         if (grabAction.GetLastStateDown(handType))
         {
             if (collidingObject)
+            {
+                GrabObject();
+            } else if(observer.ActiveSceneType == SceneType.MR_Scene)
             {
                 GrabObject();
             }
