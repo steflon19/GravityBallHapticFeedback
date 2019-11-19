@@ -13,7 +13,7 @@ public class ViveGrabObject : MonoBehaviour
     private GameObject collidingObject;
     private GameObject objectInHand;
     private List<Vector3> lastPosList;
-    private int posToSave = 10;
+    private int posToSave = 9;
     private Observer observer;
 
 
@@ -68,10 +68,6 @@ public class ViveGrabObject : MonoBehaviour
             observer.spawner.throwableGrabReady = false;
             Debug.Log("grabbing set active? ? " + throwable);
         }
-        else {
-            Debug.Log("some shit happening");
-
-        }
         if (throwable)
         {
             objectInHand = collidingObject;
@@ -123,6 +119,7 @@ public class ViveGrabObject : MonoBehaviour
             Rigidbody rb = objectInHand.GetComponent<Rigidbody>();
 
             float lf = Time.fixedDeltaTime;
+            if(lastPosList.Count <= 0 ) Debug.LogError("lastPosList empty on release");
 
             Vector3 dir = rb.position - lastPosList[0];
             float dist = Vector3.Distance(rb.position, lastPosList[0]);
@@ -148,6 +145,9 @@ public class ViveGrabObject : MonoBehaviour
 
             Vector3 force = (dir/(timeSquared)) * (rb.mass); // * (dist / timeSquared);
             force /= 10f;
+            // increase force by 10% because its too low for small objects.
+            //if ( rb.mass < 1.5f)
+            //    force *= 1.005f;
             //Debug.Log("force " + force + " rb.mass " + rb.mass);
             //Vector3 normalizedDir = new Vector3(dir.normalized.x - 1, dir.normalized.y - 1, dir.normalized.z - 1);
             //normalizedDir *= 2f;
@@ -189,6 +189,9 @@ public class ViveGrabObject : MonoBehaviour
             dist += (lastPosList[i] - lastPosList[i - 1]);
 
         }*/
+        if (lastPosList.Count <= 0) {
+            Debug.LogError("lastPosList empty;");
+        }
         dist = lastPosList[lastPosList.Count - 1] - lastPosList[0];
         // the average distance from one frame to the next
         Vector3 vel = dist / (Time.fixedDeltaTime * (lastPosList.Count - 1));

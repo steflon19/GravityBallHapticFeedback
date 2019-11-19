@@ -6,21 +6,26 @@ using UnityEngine.UI;
 public class CustomBlackboard : MonoBehaviour
 {
     // Just a data class basically.
-    private Text[] BaseballPoints = new Text[6];
-    private Text[] DiscPointFivePoints = new Text[6];
-    private Text[] DiscOnePoints = new Text[6];
-    private Text[] DiscTwoPoints = new Text[6];
-    private Text[] DiscFivePoints = new Text[6];
+    private Text[] BaseballPoints;
+    private Text[] DiscPointFivePoints;
+    private Text[] DiscOnePoints;
+    private Text[] DiscTwoPoints;
+    private Text[] DiscFivePoints;
     public GameObject[] PointsRows;
     public List<Text[]> ThrowPoints;
     public Text TotalPoints;
     public Text PlayerInfo;
     public Text LastThrowAngle;
     public Text LastThrowForce;
+    public Text dummy;
 
     private void Start()
     {
-        // TODO: if further change, refactor to GetGameObjectByTag("Throw1") etc..
+        BaseballPoints = new Text[7];
+        DiscPointFivePoints = new Text[7];
+        DiscOnePoints = new Text[7];
+        DiscTwoPoints = new Text[7];
+        DiscFivePoints = new Text[7];
         ThrowPoints = new List<Text[]>();
         for (int i = 0; i < PointsRows.Length; i++)
         {
@@ -31,10 +36,18 @@ public class CustomBlackboard : MonoBehaviour
             DiscTwoPoints[i] = children[3];
             DiscFivePoints[i] = children[4];
         }
+        // saveguard??
+        BaseballPoints[6] = dummy;
+        DiscPointFivePoints[6] = dummy;
+        DiscOnePoints[6] = dummy;
+        DiscTwoPoints[6] = dummy;
+        DiscFivePoints[6] = dummy;
         ThrowPoints.Add(BaseballPoints);
         ThrowPoints.Add(DiscPointFivePoints);
         ThrowPoints.Add(DiscOnePoints);
         ThrowPoints.Add(DiscTwoPoints);
+        ThrowPoints.Add(DiscFivePoints);
+        // DUMMY SAVEGUARD???
         ThrowPoints.Add(DiscFivePoints);
     }
 

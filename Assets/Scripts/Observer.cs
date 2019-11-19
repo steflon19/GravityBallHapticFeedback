@@ -54,11 +54,21 @@ public class Observer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ResetDataStuff();
+    }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        ResetDataStuff();
+    }
+
+    void ResetDataStuff() {
         blackboard = FindObjectOfType<CustomBlackboard>();
         spawner = FindObjectOfType<ObjectSpawner>();
-        blackboard.PlayerInfo.text += MainMenu.participantID.ToString();
+        blackboard.PlayerInfo.text = "PlayerID: " + MainMenu.participantID.ToString();
         ballDataStorage = new List<ThrowableData>();
         enumCount = Enum.GetNames(typeof(ThrowableVariants)).Length;
+        currentThrowNumber = 0;
     }
 
     // Update is called once per frame
@@ -98,29 +108,40 @@ public class Observer : MonoBehaviour
     public void HandleThrowableHit(CustomThrowable ball)
     {
         int tmpThrowNum = currentThrowNumber;
-        if ((int)currentThrowable > 4 || tmpThrowNum > 4)
+        ThrowableVariants tmpThrowVar = currentThrowable;
+        if (tmpThrowNum > 4)
         {
-            Debug.LogError("INVALID ACCESS AddCurrentThrowData " + currentThrowable + " - " + currentThrowNumber);
+            Debug.LogError("INVALID ACCESS AddCurrentThrowData " + currentThrowNumber);
             tmpThrowNum -= 1;
+        } else if ((int)tmpThrowVar > 4)
+        {
+            Debug.LogError("INVALID ACCESS AddCurrentThrowData " + currentThrowable);
+            tmpThrowVar -= 1;
         }
-        blackboard.ThrowPoints[(int)currentThrowable][tmpThrowNum].text = "0";
+        blackboard.ThrowPoints[(int)tmpThrowVar][tmpThrowNum].text = "0";
         int currentTotalVariant = 0;
-        if (!int.TryParse(blackboard.ThrowPoints[(int)currentThrowable][5].text, out currentTotalVariant))
-            blackboard.ThrowPoints[(int)currentThrowable][5].text = "0";
+        if (!int.TryParse(blackboard.ThrowPoints[(int)tmpThrowVar][5].text, out currentTotalVariant))
+            blackboard.ThrowPoints[(int)tmpThrowVar][5].text = "0";
         SaveThrowDataToStorage(ball, 0);
     }
     // handle throwable when target is hit
     public void HandleThrowableHit(CustomThrowable ball, int points)
     {
         int tmpThrowNum = currentThrowNumber;
-        if ((int)currentThrowable > 4 || tmpThrowNum > 4)
+        ThrowableVariants tmpThrowVar = currentThrowable;
+        if (tmpThrowNum > 4)
         {
-            Debug.LogError("INVALID ACCESS AddCurrentThrowData " + currentThrowable + " - " + currentThrowNumber);
+            Debug.LogError("INVALID ACCESS HandleThrowableHit " + currentThrowNumber);
             tmpThrowNum -= 1;
         }
-        blackboard.ThrowPoints[(int)currentThrowable][tmpThrowNum].text = points.ToString();
-        int currentTotalVariant = tmpThrowNum == 0 ? 0 : int.Parse(blackboard.ThrowPoints[(int)currentThrowable][5].text);
-        blackboard.ThrowPoints[(int)currentThrowable][5].text = (currentTotalVariant + points).ToString();
+        else if ((int)tmpThrowVar > 4)
+        {
+            Debug.LogError("INVALID ACCESS HandleThrowableHit " + currentThrowable);
+            tmpThrowVar -= 1;
+        }
+        blackboard.ThrowPoints[(int)tmpThrowVar][tmpThrowNum].text = points.ToString();
+        int currentTotalVariant = tmpThrowNum == 0 ? 0 : int.Parse(blackboard.ThrowPoints[(int)tmpThrowVar][5].text);
+        blackboard.ThrowPoints[(int)tmpThrowVar][5].text = (currentTotalVariant + points).ToString();
         SaveThrowDataToStorage(ball, points);
     }
 
@@ -132,12 +153,13 @@ public class Observer : MonoBehaviour
         //}
         int dataIndex = ballDataStorage.FindIndex(bd => bd.type == currentThrowable && bd.throwNumber == currentThrowNumber);
         if (dataIndex < 0) {
-            Debug.LogError("invalid data saving, something went wrong before??");
+            Debug.LogError("invalid data saving, something went wrong before?? " + currentThrowable + " - " + currentThrowNumber);
             currentThrowNumber++;
             return;
         }
         ballDataStorage[dataIndex].Points = points;
-        ballDataStorage[dataIndex].DistanceToTarget = Vector3.Distance(ball.transform.position, spawner.activeTarget.transform.position);
+        float dist = Vector3.Distance(ball.transform.position, spawner.activeTarget.transform.position);
+        ballDataStorage[dataIndex].DistanceToTarget = (float)Math.Round(dist, 4);
 
         currentThrowNumber++;
         //currentThrowNumber = currentThrowNumber < 5 ? currentThrowNumber + 1 : 0;
@@ -148,10 +170,16 @@ public class Observer : MonoBehaviour
     public void AddCurrentThrowData(Vector3 releasePos, float yAngle, Vector3 appliedForce)
     {
         int tmpThrowNum = currentThrowNumber;
-        if ((int)currentThrowable > 4 || tmpThrowNum > 4)
+        ThrowableVariants tmpThrowVar = currentThrowable;
+        if (tmpThrowNum > 4)
         {
-            Debug.LogError("INVALID ACCESS AddCurrentThrowData " + currentThrowable + " - " + currentThrowNumber);
+            Debug.LogError("INVALID ACCESS HandleThrowableHit " + currentThrowNumber);
             tmpThrowNum -= 1;
+        }
+        else if ((int)tmpThrowVar > 4)
+        {
+            Debug.LogError("INVALID ACCESS HandleThrowableHit " + currentThrowable);
+            tmpThrowVar -= 1;
         }
         currentThrowData = new ThrowableData();
         currentThrowData.ReleasePos = releasePos;
