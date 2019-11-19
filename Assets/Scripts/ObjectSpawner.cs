@@ -6,6 +6,7 @@ public class ObjectSpawner : MonoBehaviour
 {
     public Vector2 extends;
     public GameObject baseTarget;
+    public AnimationCurve targetScaleByDistanceCurve;
     [System.NonSerialized]
     public GameObject activeTarget;
 
@@ -16,6 +17,7 @@ public class ObjectSpawner : MonoBehaviour
 
     private Observer observer;
     private ViveActionHandler viveActionHandler;
+    private float maxDistance;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,19 +25,23 @@ public class ObjectSpawner : MonoBehaviour
         observer = FindObjectOfType<Observer>();
         viveActionHandler = FindObjectOfType<ViveActionHandler>();
         activeTarget = Instantiate(baseTarget);
+        maxDistance = Vector3.Distance(BallStartPosition, new Vector3(extends.x, 0.1f, extends.y));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) || viveActionHandler.GetTeleportDown())
+        if (Input.GetKeyDown(KeyCode.T))// || viveActionHandler.GetTeleportDown())
         {
             if(activeTarget) Destroy(activeTarget);
             float x = baseTarget.transform.localPosition.x;
             float z = baseTarget.transform.localPosition.z;
             float y = baseTarget.transform.localPosition.y;
-            float scale = Random.Range(0.5f, 1.3f);
             Vector3 newPos = new Vector3(Random.Range(x, x + extends.x), y, Random.Range(z, z + extends.y));
+            float distanceToTarget = Vector3.Distance(BallStartPosition, newPos);
+            float scaleMin = targetScaleByDistanceCurve.Evaluate(distanceToTarget/maxDistance);
+            Debug.Log("dist " + distanceToTarget + " and scaleMin " + scaleMin);
+            float scale = Random.Range(scaleMin, 1.3f);
             activeTarget = Instantiate(baseTarget);
             activeTarget.transform.parent = this.transform;
             activeTarget.transform.localPosition = newPos;
@@ -43,9 +49,9 @@ public class ObjectSpawner : MonoBehaviour
             activeTarget.SetActive(true);
         }
 
-        if (Input.GetKeyDown(KeyCode.B) || viveActionHandler.GetGripDown())
+        if (Input.GetKeyDown(KeyCode.B))// || viveActionHandler.GetGripDown())
         {
-            if (activeThrowable) Destroy(activeThrowable.gameObject);
+            if (activeThrowable && activeThrowable.gameObject) Destroy(activeThrowable.gameObject);
             CustomThrowable ballToSpawn = Throwables.Find(b => b.type == observer.currentThrowable);
             activeThrowable = Instantiate(ballToSpawn);
             // TODO: set to ballstartposition for proper start

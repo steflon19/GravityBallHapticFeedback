@@ -696,10 +696,10 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: d9e2894d-7019-442f-82b3-f11d0bf4358d
+  cloudProjectId: 171e7bf3-c0e0-4e8a-be17-1339deffc8a1
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: jasonlomsdalen
+  projectName: GravityUnity
+  organizationId: stefan-lontschar
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

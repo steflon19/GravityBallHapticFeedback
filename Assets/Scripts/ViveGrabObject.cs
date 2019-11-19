@@ -21,7 +21,7 @@ public class ViveGrabObject : MonoBehaviour
     void Start()
     {
         lastPosList = new List<Vector3>();
-        observer = GameObject.FindObjectOfType<Observer>();
+        observer = FindObjectOfType<Observer>();
     }
 
     private void SetCollidingObject(Collider col)
@@ -63,6 +63,7 @@ public class ViveGrabObject : MonoBehaviour
 
             var joint = AddFixedJoint();
             Debug.Log(objectInHand.name + " - " + objectInHand.transform.localPosition);
+            // TODO: maybe remove this  if and just take the else
             if (throwable.snapAnchor)
             {
                 throwable.transform.up = snapAnchor.transform.up;
@@ -147,7 +148,8 @@ public class ViveGrabObject : MonoBehaviour
             //rb.velocity = force;
 
             rb.angularVelocity = controllerPose.GetAngularVelocity();
-            // add some check for a proper throw?
+
+            observer.WriteThrowToBlackboard(force.magnitude, yAngle);
 
             if (objectInHand.GetComponent<CustomThrowable>())
             {

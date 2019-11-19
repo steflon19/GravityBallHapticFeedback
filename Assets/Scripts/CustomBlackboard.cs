@@ -15,6 +15,8 @@ public class CustomBlackboard : MonoBehaviour
     public List<Text[]> ThrowPoints;
     public Text TotalPoints;
     public Text PlayerInfo;
+    public Text LastThrowAngle;
+    public Text LastThrowForce;
 
     private void Start()
     {

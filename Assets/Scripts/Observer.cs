@@ -148,5 +148,10 @@ public class Observer : MonoBehaviour
         writer.WriteLine("]\n}");
         writer.Close();
     }
-    
+
+    public void WriteThrowToBlackboard(float forceMag, float yAngle)
+    {
+        blackboard.LastThrowAngle.text = "Last Throw Angle: " + Math.Round(yAngle).ToString() + "°";
+        blackboard.LastThrowForce.text = "Last Throw Force: " + Math.Round(forceMag, 2) + "Nm";
+    }
 }
