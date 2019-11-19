@@ -110,6 +110,8 @@ public class Observer : MonoBehaviour
     }
 
     public void AddCurrentThrowData(Vector3 releasePos, float yAngle, Vector3 appliedForce) {
+        if ((int)currentThrowable > 4)
+            return;
         currentThrowData = new ThrowableData();
         currentThrowData.ReleasePos = releasePos;
         currentThrowData.ReleaseAngle = yAngle;
@@ -141,6 +143,7 @@ public class Observer : MonoBehaviour
         {
             if (index == ballDataStorage.Count - 1) commaString = "";
             writer.WriteLine(JsonUtility.ToJson(dataEntry) + commaString);
+            index++;
         }
         writer.WriteLine("]\n}");
         writer.Close();
