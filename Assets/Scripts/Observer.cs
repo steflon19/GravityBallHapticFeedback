@@ -84,8 +84,6 @@ public class Observer : MonoBehaviour
         if(currentThrowNumber > 4)
         {
             currentThrowNumber = 0;
-            Debug.Log("should increase throwable type? " + currentThrowNumber);
-            // handledLastThrowOfType = false;
 
             int.TryParse(blackboard.ThrowPoints[0][5].text, out int sumOne);
             int.TryParse(blackboard.ThrowPoints[1][5].text, out int sumTwo);
@@ -98,7 +96,7 @@ public class Observer : MonoBehaviour
         if ((int)currentThrowable >= enumCount)
         {
             currentThrowable = 0;
-            Debug.Log("NEXT active variant " + currentThrowable);
+            Debug.Log("NEXT active variant RESET " + currentThrowable);
             Debug.LogWarning("Test DONE, should stop.");
         }
 

@@ -70,7 +70,7 @@ public class ObjectSpawner : MonoBehaviour
             else
             {
                 throwableGrabReady = true;
-                Debug.Log("active throwable MR " + activeThrowable);
+                Debug.Log("Throwable ready MR " + activeThrowable.name);
             }
         }
     }
