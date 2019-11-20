@@ -158,7 +158,7 @@ public class Observer : MonoBehaviour
         ballDataStorage[dataIndex].Points = points;
         float dist = Vector3.Distance(ball.transform.position, spawner.activeTarget.transform.position);
         ballDataStorage[dataIndex].DistanceToTarget = (float)Math.Round(dist, 4);
-
+        writeDataToFileRAW(currentThrowData);
         currentThrowNumber++;
         //currentThrowNumber = currentThrowNumber < 5 ? currentThrowNumber + 1 : 0;
         //if (currentThrowNumber == 5)
@@ -189,7 +189,6 @@ public class Observer : MonoBehaviour
         // only do this in case this was an actual proper throw? to prevent deleting proper data i guess
         if(tmpThrowNum == currentThrowNumber)
             ballDataStorage.Remove(ballDataStorage.Find(bd => bd.type == currentThrowable && bd.throwNumber == tmpThrowNum));
-        writeDataToFileRAW(currentThrowData);
         ballDataStorage.Add(currentThrowData);
     }
 
