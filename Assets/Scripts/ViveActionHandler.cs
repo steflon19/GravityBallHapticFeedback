@@ -25,6 +25,10 @@ public class ViveActionHandler : MonoBehaviour
     {
         return grabAction.GetState(handType);
     }
+    public bool GetGrabDown()
+    {
+        return grabAction.GetStateDown(handType);
+    }
 
     public bool GetGripDown()
     {

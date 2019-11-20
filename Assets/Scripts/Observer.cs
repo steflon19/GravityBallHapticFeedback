@@ -155,6 +155,8 @@ public class Observer : MonoBehaviour
         float dist = Vector3.Distance(ball.transform.position, spawner.activeTarget.transform.position);
         ballDataStorage[dataIndex].DistanceToTarget = (float)Math.Round(dist, 4);
         writeDataToFileRAW(currentThrowData);
+
+        Debug.Log("increasing throwable num");
         currentThrowNumber++;
         //currentThrowNumber = currentThrowNumber < 5 ? currentThrowNumber + 1 : 0;
         //if (currentThrowNumber == 5)

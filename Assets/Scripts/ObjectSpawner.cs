@@ -54,7 +54,7 @@ public class ObjectSpawner : MonoBehaviour
             activeTarget.SetActive(true);
         }
 
-        if (Input.GetKeyDown(KeyCode.B))// || viveActionHandler.GetGripDown())
+        if (Input.GetKeyDown(KeyCode.B) || (observer.ActiveSceneType == SceneType.MR_Scene && viveActionHandler.GetGrabDown() && (activeThrowable && activeThrowable.collisionHandled)))// || viveActionHandler.GetGripDown())
         {
             if (activeThrowable && activeThrowable.gameObject) Destroy(activeThrowable.gameObject);
             CustomThrowable ballToSpawn = Throwables.Find(b => b.type == observer.currentThrowable);

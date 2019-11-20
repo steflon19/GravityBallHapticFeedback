@@ -51,7 +51,10 @@ public class CustomThrowable : MonoBehaviour
             return;
         // if the ball is just dropped, not thrown, we dont need to do anything further.
         if (col.gameObject.CompareTag("ground"))
+        {
+            this.collisionHandled = true;
             return;
+        }
 
         if (col.gameObject.name == "field" && !this.collisionHandled)
         {
@@ -66,8 +69,6 @@ public class CustomThrowable : MonoBehaviour
         if (target && !this.collisionHandled)
         {
             landingPos = rb != null ? rb.position : col.transform.position;
-            //observer.throwNumber++;
-            this.collisionHandled = true;
 
             // avoid showing bounce collision as valid throw
             collisionHandled = true;
