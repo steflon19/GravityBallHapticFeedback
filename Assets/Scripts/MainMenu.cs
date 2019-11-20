@@ -29,4 +29,19 @@ public class MainMenu : MonoBehaviour
             SceneManager.LoadScene("mr_scene");
         }
     }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+
+            Debug.Log("Application quit?");
+#if UNITY_EDITOR
+         // Application.Quit() does not work in the editor so
+         // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
+         UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+    }
 }
