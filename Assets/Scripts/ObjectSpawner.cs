@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ObjectSpawner : MonoBehaviour
 {
-    public Vector2 extends;
     public GameObject baseTarget;
     public AnimationCurve targetScaleByDistanceCurve;
     [System.NonSerialized]
@@ -28,7 +27,6 @@ public class ObjectSpawner : MonoBehaviour
         observer = FindObjectOfType<Observer>();
         viveActionHandler = FindObjectOfType<ViveActionHandler>();
         activeTarget = Instantiate(baseTarget);
-        maxDistance = Vector3.Distance(BallStartPosition, new Vector3(extends.x, 0.1f, extends.y));
         throwableGrabReady = false;
     }
 
@@ -41,16 +39,15 @@ public class ObjectSpawner : MonoBehaviour
             float x = baseTarget.transform.localPosition.x;
             float z = baseTarget.transform.localPosition.z;
             float y = baseTarget.transform.localPosition.y;
-            Vector3 newPos = new Vector3(Random.Range(x, x + extends.x), y, Random.Range(z, z + extends.y));
+            Vector3 newPos = new Vector3(x + observer.GetCurrentThrowNumber(), y, Random.Range(z, z + 6));
             //float distanceToTarget = Vector3.Distance(BallStartPosition, newPos);
             //float scaleMin = targetScaleByDistanceCurve.Evaluate(distanceToTarget/maxDistance);
             //Debug.Log("dist " + distanceToTarget + " and scaleMin " + scaleMin);
             //float scale = Random.Range(scaleMin, 1.3f);
-            float scale = Random.Range(0.5f, 1.3f);
             activeTarget = Instantiate(baseTarget);
             activeTarget.transform.parent = this.transform;
             activeTarget.transform.localPosition = newPos;
-            activeTarget.transform.localScale = new Vector3(scale, scale, 1);
+            activeTarget.transform.localScale = new Vector3(1, 1, 1);
             activeTarget.SetActive(true);
         }
 

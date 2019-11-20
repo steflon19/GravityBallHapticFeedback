@@ -26,7 +26,8 @@ public enum ThrowableVariants
     DiscPointFive,
     DiscOne,
     DiscTwo,
-    DiscFive
+    // This couldv been done cleaner but hey..quick and dirty..
+    BaseballTwo
 }
 
 public enum SceneType
@@ -227,6 +228,10 @@ public class Observer : MonoBehaviour
         }
         writer.WriteLine("]\n}");
         writer.Close();
+    }
+
+    public int GetCurrentThrowNumber() {
+        return currentThrowNumber;
     }
 
     public void WriteThrowToBlackboard(float forceMag, float yAngle)

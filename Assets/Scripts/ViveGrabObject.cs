@@ -61,7 +61,7 @@ public class ViveGrabObject : MonoBehaviour
             // this is just because for some reason the throwable was nested. shouldnt be necessary.
             if (!throwable) throwable = collidingObject.GetComponentInParent<CustomThrowable>();
         }
-        else if (observer.ActiveSceneType == SceneType.MR_Scene && observer.spawner.throwableGrabReady)
+        else if (observer.ActiveSceneType == SceneType.MR_Scene && observer.spawner && observer.spawner.throwableGrabReady)
         {
             throwable = observer.spawner.activeThrowable;
             throwable.gameObject.SetActive(true);
@@ -81,18 +81,18 @@ public class ViveGrabObject : MonoBehaviour
             var joint = AddFixedJoint();
             Debug.Log(objectInHand.name + " - " + objectInHand.transform.localPosition);
             // TODO: maybe remove this  if and just take the else
-            if (throwable.snapAnchor)
-            {
-                throwable.transform.up = snapAnchor.transform.up;
-                throwable.transform.position = snapAnchor.transform.position;
-                Vector3 posDif = snapAnchor.transform.position - throwable.snapAnchor.transform.position;
-                throwable.transform.position += posDif;
-            }
-            else
-            {
-                objectInHand.transform.position = snapAnchor.transform.position;
-                objectInHand.transform.up = snapAnchor.transform.up;
-            }
+            //if (throwable.snapAnchor)
+            //{
+            //    throwable.transform.up = snapAnchor.transform.up;
+            //    throwable.transform.position = snapAnchor.transform.position;
+            //    Vector3 posDif = snapAnchor.transform.position - throwable.snapAnchor.transform.position;
+            //    throwable.transform.position += posDif;
+            //}
+            //else
+            //{
+            objectInHand.transform.position = snapAnchor.transform.position;
+            objectInHand.transform.up = snapAnchor.transform.up;
+            //}
             joint.connectedBody = objectInHand.GetComponent<Rigidbody>();
             objectInHand.GetComponent<CustomThrowable>().isGrabbed = true;
         }
