@@ -145,10 +145,6 @@ public class Observer : MonoBehaviour
 
     void SaveThrowDataToStorage(CustomThrowable ball, int points)
     {
-        //if ((int)currentThrowable > 4 || currentThrowNumber > 4)
-        //{
-        //    Debug.LogError("INVALID ACCESS SaveThrowDataToStorage " + currentThrowable + " - " + currentThrowNumber);
-        //}
         int dataIndex = ballDataStorage.FindIndex(bd => bd.type == currentThrowable && bd.throwNumber == currentThrowNumber);
         if (dataIndex < 0) {
             Debug.LogError("invalid data saving, something went wrong before?? " + currentThrowable + " - " + currentThrowNumber);
@@ -185,7 +181,7 @@ public class Observer : MonoBehaviour
         currentThrowData.ReleaseForce = appliedForce;
         currentThrowData.throwNumber = tmpThrowNum;
         currentThrowData.type = currentThrowable;
-        // There could be several throws due to failed attempts, therefore invalid data should be removed
+        // There could be several releases due to failed attempts, therefore invalid data should be removed
         // only do this in case this was an actual proper throw? to prevent deleting proper data i guess
         if(tmpThrowNum == currentThrowNumber)
             ballDataStorage.Remove(ballDataStorage.Find(bd => bd.type == currentThrowable && bd.throwNumber == tmpThrowNum));
