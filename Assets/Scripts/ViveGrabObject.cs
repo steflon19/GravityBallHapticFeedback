@@ -16,6 +16,10 @@ public class ViveGrabObject : MonoBehaviour
     private int posToSave = 9;
     private Observer observer;
 
+    private int debounceFrameCount = 30;
+    private bool debouncedGrabUp = false;
+    private int debounceFrameCountPos = 100;
+
 
     // Start is called before the first frame update
     void Start()
@@ -151,18 +155,44 @@ public class ViveGrabObject : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
+        if (grabAction.GetLastStateDown(handType))
+        {
+            Debug.Log("setting DOWN active and timer to 10");
+            debounceFrameCount = 10;
+            debouncedGrabUp = false;
+        }
+        
+        if (debounceFrameCount > 0) {
+            --debounceFrameCount;
+            //Debug.Log("decreasing timer " + debounceFrameCount);
+        }
+
+        if (grabAction.GetLastStateUp(handType))
+        {
+            if (debounceFrameCount <= 0)
+            {
+                Debug.Log("setting UP to true");
+                debouncedGrabUp = true;
+            }
+            else {
+                Debug.Log("state UP but timer not zero " + debounceFrameCount);
+            }
+        }
+
         if (grabAction.GetLastStateDown(handType))
         {
             if (collidingObject)
             {
                 GrabObject();
-            } else if(observer.ActiveSceneType == SceneType.MR_Scene)
+            }
+            else if(observer.ActiveSceneType == SceneType.MR_Scene)
             {
                 GrabObject();
             }
         }
 
-        if (grabAction.GetLastStateUp(handType))
+        if (debouncedGrabUp) //grabAction.GetLastStateUp(handType))
         {
             if (objectInHand)
             {
@@ -170,11 +200,22 @@ public class ViveGrabObject : MonoBehaviour
             }
         }
 
-        if (objectInHand) {
-            if (lastPosList.Count >= posToSave) {
+        if (objectInHand)
+        {
+            if (lastPosList.Count >= posToSave)
+            {
                 lastPosList.RemoveAt(0);
             }
             lastPosList.Add(objectInHand.GetComponent<Rigidbody>().position);
+            debounceFrameCountPos = 10;
+        }
+        else
+        {
+            if (debounceFrameCountPos > 0) {
+                debounceFrameCountPos--;
+            } else {
+                lastPosList.Clear();
+            }
         }
     }
 }
