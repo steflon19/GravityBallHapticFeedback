@@ -42,11 +42,13 @@ public class CustomThrowable : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         // only handle first collision. to prevent bouncing etc
+        //Debug.Log("handling collision col: " + col.gameObject.tag + " - " + this.collisionHandled + " - " + observer.spawner.activeTarget.gameObject.name);
         if (this.collisionHandled)
             return;
         // if the ball is just dropped, not thrown, we dont need to do anything further.
         if (col.gameObject.CompareTag("ground"))
         {
+            //print("Handling ground collision");
             this.collisionHandled = true;
             return;
         }
