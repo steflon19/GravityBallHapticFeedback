@@ -26,44 +26,51 @@ def read_csv(fname):
 #preData = read_json('./data/survey/pre_survey.json')
 #postData = read_json('./data/survey/post_survey.json')
 
-#allAfterMR =  read_csv("all_MR_immersion_AFTER");
-#allDuringMR =  read_csv("all_MR_immersion_DURING");
-#allAfterVR =  read_csv("all_VR_immersion_AFTER");
-#allDuringVR =  read_csv("all_VR_immersion_During");
+allAfterMR =  read_csv("all_MR_immersion_AFTER");
+allDuringMR =  read_csv("all_MR_immersion_DURING");
+allAfterVR =  read_csv("all_VR_immersion_AFTER");
+allDuringVR =  read_csv("all_VR_immersion_During");
 #bestThirdDistAfterMR =  read_csv("best_third_distance_MR_immersion_AFTER");
 #bestThirdDistDuringMR =  read_csv("best_third_distance_MR_immersion_DURING");
 #bestThirdDistAfterVR =  read_csv("best_third_distance_VR_immersion_AFTER");
 #bestThirdDistDuringVR =  read_csv("best_third_distance_VR_immersion_DURING");
 #bestThirdLearnerAfterMR =  read_csv("best_third_learner_MR_immersion_AFTER");
-#bestThirdLearnDuringMR =  read_csv("best_third_learner_MR_immersion_DURING");
+#bestThirdLearnerDuringMR =  read_csv("best_third_learner_MR_immersion_DURING");
 #bestThirdLearnerAfterVR =  read_csv("best_third_learner_VR_immersion_AFTER");
-#bestThirdLearnDuringVR =  read_csv("best_third_learner_VR_immersion_DURING");
+#bestThirdLearnerDuringVR =  read_csv("best_third_learner_VR_immersion_DURING");
 #demographics =  read_csv("demographics");
-resultDataThrowing = read_csv("result_data_throwing");
-resultDataThrowingBestLearn = read_csv("result_data_throwing_best_learner");
-resultDataThrowingBestLearnDist = read_csv("result_data_throwing_best_learner_distance");
-resultDataThrowingDist = read_csv("result_data_throwing_best_third_distance");
+#resultDataThrowing =  read_csv("result_data_throwing");
+#resultDataThrowingBestLearn =  read_csv("result_data_throwing_best_learner");
+#resultDataThrowingBestLearnDist =  read_csv("result_data_throwing_best_learner_distance");
+#resultDataThrowingDist =  read_csv("result_data_throwing_best_third_distance");
 #worstResultDataThrowingLearn =  read_csv("result_data_throwing_worst_learner");
 #worstResultDataThrowingDist =  read_csv("result_data_throwing_worst_third_distance");
 #worstThirdDistAfterMR =  read_csv("worst_third_distance_MR_immersion_AFTER");
 #worstThirdDistDuringMR =  read_csv("worst_third_distance_MR_immersion_DURING");
 #worstThirdDistAfterVR =  read_csv("worst_third_distance_VR_immersion_AFTER");
 #worstThirdDistDuringVR =  read_csv("worst_third_distance_VR_immersion_DURING");
-#worstThirdLearnAfterMR =  read_csv("worst_third_learner_MR_immersion_AFTER");
-#worstThirdLearnDuringMR =  read_csv("worst_third_learner_MR_immersion_DURING");
+#worstThirdLearnerAfterMR =  read_csv("worst_third_learner_MR_immersion_AFTER");
+#worstThirdLearnerDuringMR =  read_csv("worst_third_learner_MR_immersion_DURING");
 #worstThirdLearnerAfterVR =  read_csv("worst_third_learner_VR_immersion_AFTER");
-#worstThirdLearnDuringVR =  read_csv("worst_third_learner_VR_immersion_DURING");
+#worstThirdLearnerDuringVR =  read_csv("worst_third_learner_VR_immersion_DURING");
+
+mrDat = allDuringMR
+vrDat = allDuringVR
+bOrD = 'During'
+distOrLearn = ''
+bestOrWorst = ''
+rangee = 8
+if(bOrD == 'After'): 
+    rangee = 7
 
 def getValuesList(list,x):
     l = []
-    for i in range(1,8):
+    for i in range(1,rangee):
         l.append(round(list.iloc[x][i],2))
     return l
 
 # compare worst to best 
 #labels = bestThirdDistAfterMR.columns.values[1:]
-mrDat = allDuringMR
-vrDat = allDuringVR
 
 labels = ['\n'.join(wrap(l, 15)) for l in mrDat.columns.values[1:]] 
 mr = getValuesList(mrDat, 0) #[bestThirdDistAfterMR.iloc[0][1], bestThirdDistAfterMR.iloc[0][2], bestThirdDistAfterMR.iloc[0][3], bestThirdDistAfterMR.iloc[0][4], bestThirdDistAfterMR.iloc[0][5], bestThirdDistAfterMR.iloc[0][6]]
@@ -84,12 +91,17 @@ fig, ax = plt.subplots()
 # Add some text for labels, title and custom x-axis tick labels, etc.
 #ax.set_ylabel('Scores')
 
-rects1 = ax.bar(x - width/2, mr, width, yerr=mrError, label='All MR', capsize=3.0)
-rects2 = ax.bar(x + width/2, vr, width, yerr=vrError, label='All VR', capsize=3.0)
-ax.set_title('All MR vs VR - Immersion - During')
+rects1 = ax.bar(x - width/2, mr, width, yerr=mrError, label=bestOrWorst + 'All MR', capsize=3.0)
+rects2 = ax.bar(x + width/2, vr, width, yerr=vrError, label=bestOrWorst + 'All VR', capsize=3.0)
+
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+ax.set_title(bestOrWorst + 'All MR vs VR' + bOrD, fontsize=20)
 ax.set_xticks(x)
-ax.set_xticklabels(labels, fontsize=15)
-ax.legend()
+ax.set_xticklabels(labels, fontsize=14)
+ax.tick_params(axis='y', labelsize=15) 
+ax.legend(fontsize=13)
 
 def autolabel(rects):
     #Attach a text label above each bar in *rects*, displaying its height
@@ -108,5 +120,5 @@ autolabel(rects2)
 fig.tight_layout()
 
 fig.set_size_inches(13.5, 8.5)
-plt.savefig("data/figures/allDuring.png")
+plt.savefig("data/figures/" + bestOrWorst + "All" + distOrLearn + bOrD + ".png")
 #
