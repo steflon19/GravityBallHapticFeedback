@@ -1,0 +1,10 @@
+distance_vr,distance_mr,distance_vr_SD,distance_mr_SD,learning_vr,learning_mr,learning_vr_SD,learning_mr_SD
+1.31598,1.32452,0.239579,0.31264,1.57754,1.63123,0.278517,0.37145
+
+
+0_distance_vr,0_distance_mr,0_learning_vr,0_learning_mr,1_distance_vr,1_distance_mr,1_learning_vr,1_learning_mr,2_distance_vr,2_distance_mr,2_learning_vr,2_learning_mr,3_distance_vr,3_distance_mr,3_learning_vr,3_learning_mr, 4_distance_vr,4_distance_mr,4_learning_vr,4_learning_mr
+1.44437,1.30989,1.5201,1.45321,1.34258,1.3021,1.42678,1.77407,1.26508,1.31785,1.56621,1.56431,1.17132,1.40044,1.79406,1.6604,1.35124,1.28776,1.58057,1.83396,
+
+0_SD_distance_SD_vr,0_SD_distance_SD_mr,0_SD_learning_SD_vr,0_SD_learning_SD_mr,1_SD_distance_SD_vr,1_SD_distance_SD_mr,1_SD_learning_SD_vr,1_SD_learning_SD_mr,2_SD_distance_SD_vr,2_SD_distance_SD_mr,2_SD_learning_SD_vr,2_SD_learning_SD_mr,3_SD_distance_SD_vr,3_SD_distance_SD_mr,3_SD_learning_SD_vr,3_SD_learning_SD_mr, 4_SD_distance_SD_vr,4_SD_distance_SD_mr,4_SD_learning_SD_vr,4_SD_learning_SD_mr
+0.420183,0.50328,0.680592,0.534591,0.457378,0.347918,0.537225,0.752194,0.404706,0.495416,0.524057,0.606119,0.317429,0.441908,0.565274,0.705441,0.378949,0.593458,0.72368,0.735084,
+
